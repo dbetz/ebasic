@@ -12,7 +12,7 @@ static uint8_t *bufferMax = buffer + sizeof(buffer);
 static uint8_t *bufferTop = buffer;
 static Line *current = (Line *)buffer;
 
-static int FindLineN(VMVALUE lineNumber, Line **pLine);
+static int FindLineN(int lineNumber, Line **pLine);
 
 void BufInit(void)
 {
@@ -20,7 +20,7 @@ void BufInit(void)
     current = (Line *)buffer;
 }
 
-int BufAddLineN(VMVALUE lineNumber, const char *text)
+int BufAddLineN(int lineNumber, const char *text)
 {
     int newLength = sizeof(Line) + strlen(text);
     int spaceNeeded;
@@ -62,7 +62,7 @@ int BufAddLineN(VMVALUE lineNumber, const char *text)
     return VMTRUE;
 }
 
-int BufDeleteLineN(VMVALUE lineNumber)
+int BufDeleteLineN(int lineNumber)
 {
     Line *line, *next;
     int spaceFreed;
@@ -84,7 +84,7 @@ int BufDeleteLineN(VMVALUE lineNumber)
     return VMTRUE;
 }
 
-int BufSeekN(VMVALUE lineNumber)
+int BufSeekN(int lineNumber)
 {
     /* if the line number is zero start at the first line */
     if (lineNumber == 0)
@@ -98,7 +98,7 @@ int BufSeekN(VMVALUE lineNumber)
     return VMTRUE;
 }
 
-int BufGetLine(VMVALUE *pLineNumber, char *text)
+int BufGetLine(int *pLineNumber, char *text)
 {
     /* check for the end of the buffer */
     if ((uint8_t *)current >= bufferTop)
@@ -115,7 +115,7 @@ int BufGetLine(VMVALUE *pLineNumber, char *text)
     return VMTRUE;
 }
 
-static int FindLineN(VMVALUE lineNumber, Line **pLine)
+static int FindLineN(int lineNumber, Line **pLine)
 {
     uint8_t *p = buffer;
     while (p < bufferTop) {

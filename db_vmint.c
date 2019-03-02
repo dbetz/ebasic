@@ -12,7 +12,7 @@
 #include "db_vm.h"
 #include "db_vmdebug.h"
 
-//#define DEBUG
+#define DEBUG
 
 /* interpreter state structure */
 typedef struct {

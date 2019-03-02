@@ -41,12 +41,12 @@ static char programName[MAX_PROG_NAME] = "";
 
 /* prototypes */
 static char *NextToken(System *sys);
-static int ParseNumber(char *token, VMVALUE *pValue);
+static int ParseNumber(char *token, int *pValue);
 static int IsBlank(char *p);
 
 void EditWorkspace(System *sys, UserCmd *userCmds, Handler *evalHandler, void *cookie)
 {
-    VMVALUE lineNumber;
+    int lineNumber;
     char *token;
 
     BufInit();
@@ -127,7 +127,7 @@ static void DoLoad(System *sys)
     if (!(fp = VM_fopen(programName, "r")))
         VM_printf("error loading '%s'\n", programName);
     else {
-        VMVALUE lineNumber = 100;
+        int lineNumber = 100;
         VM_printf("Loading '%s'\n", programName);
         BufInit();
         while (VM_fgets(sys->lineBuf, sizeof(sys->lineBuf), fp) != NULL) {
@@ -158,7 +158,7 @@ static void DoSave(System *sys)
     if (!(fp = VM_fopen(programName, "w")))
         VM_printf("error saving '%s'\n", programName);
     else {
-        VMVALUE lineNumber;
+        int lineNumber;
         VM_printf("Saving '%s'\n", programName);
         BufSeekN(0);
         while (BufGetLine(&lineNumber, sys->lineBuf)) {
@@ -189,7 +189,7 @@ static void DoCat(System *sys)
 
 static void DoList(System *sys)
 {
-    VMVALUE lineNumber;
+    int lineNumber;
     BufSeekN(0);
     while (BufGetLine(&lineNumber, sys->lineBuf))
         VM_printf("%d %s", lineNumber, sys->lineBuf);
@@ -213,9 +213,9 @@ static char *NextToken(System *sys)
     return token[0] == '\0' ? NULL : token;
 }
 
-static int ParseNumber(char *token, VMVALUE *pValue)
+static int ParseNumber(char *token, int *pValue)
 {
-    VMVALUE value;
+    int value;
     int ch;
     value = 0;
     while ((ch = *token++) != '\0' && isdigit(ch))

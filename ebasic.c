@@ -28,16 +28,17 @@ UserCmd userCmds[] = {
 
 void CompileAndExecute(HandlerData *data);
 
-static int TermGetLine(void *cookie, char *buf, int len, VMVALUE *pLineNumber);
+static int TermGetLine(void *cookie, char *buf, int len, int *pLineNumber);
 
 int main(int argc, char *argv[])
 {
-    VMVALUE lineNumber = 0;
+    int lineNumber = 0;
     HandlerData data;
     ImageHdr *image;
     System *sys;
 
-    VM_printf("ebasic 0.003\n");
+    sleep(1);
+    VM_printf("ebasic3 v0.01\n");
 
     VM_sysinit(argc, argv);
 
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-static int EditGetLine(void *cookie, char *buf, int len, VMVALUE *pLineNumber)
+static int EditGetLine(void *cookie, char *buf, int len, int *pLineNumber)
 {
     return BufGetLine(pLineNumber, buf);
 }
@@ -105,9 +106,9 @@ void CompileAndExecute(HandlerData *data)
     }
 }
 
-static int TermGetLine(void *cookie, char *buf, int len, VMVALUE *pLineNumber)
+static int TermGetLine(void *cookie, char *buf, int len, int *pLineNumber)
 {
-    VMVALUE *pLine = (VMVALUE *)cookie;
+    int *pLine = (int *)cookie;
     *pLineNumber = ++(*pLine);
     return VM_getline(buf, len) != NULL;
 }

@@ -37,8 +37,8 @@
 #include <string.h>
 
 typedef int16_t VMWORD;
-typedef int32_t VMVALUE;
-typedef uint32_t VMUVALUE;
+typedef int64_t VMVALUE;
+typedef uint64_t VMUVALUE;
 
 #define ALIGN_MASK              3
 
@@ -71,6 +71,31 @@ int strcasecmp(const char *s1, const char *s2);
 
 #define PROPELLER
 #define ANSI_FILE_IO
+
+#endif  // PROPELLER_GCC
+
+/****************/
+/* PROPELLER_P2 */
+/****************/
+
+#ifdef PROPELLER_P2
+
+#include <string.h>
+#include <stdint.h>
+
+typedef int16_t VMWORD;
+typedef int32_t VMVALUE;
+typedef uint32_t VMUVALUE;
+
+#define ALIGN_MASK              3
+
+int strcasecmp(const char *s1, const char *s2);
+
+#define VMCODEBYTE(p)           *(uint8_t *)(p)
+#define VMINTRINSIC(i)          Intrinsics[i]
+
+#define PROPELLER
+//#define ANSI_FILE_IO
 
 #endif  // PROPELLER_GCC
 

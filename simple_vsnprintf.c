@@ -11,9 +11,11 @@
  * MIT licensed (see terms at end of file)
  */
 
-#include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 #include <ctype.h>
+#include <limits.h>
 
 /*
  * very simple printf -- just understands a few format features
@@ -42,52 +44,57 @@ STRINGBUF_putc(STRINGBUF *buf, int ch)
 
 static int
 PUTC(STRINGBUF *buf, int c, int width) {
-	int put = 0;
+    int put = 0;
 
-	STRINGBUF_putc(buf, c); put++;
-	while (--width > 0) {
-		STRINGBUF_putc(buf, ' ');
-		put++;
-	}
-	return put;
+    STRINGBUF_putc(buf, c); put++;
+    while (--width > 0) {
+        STRINGBUF_putc(buf, ' ');
+        put++;
+    }
+    return put;
 }
 
 static int
 PUTS(STRINGBUF *buf, const char *s, int width) {
-	int put = 0;
+    int put = 0;
 
-	while (*s) {
-	  STRINGBUF_putc(buf, *s++); put++;
-	  width--;
-	}
-	while (width-- > 0) {
-	  STRINGBUF_putc(buf, ' '); put++;
-	}
-	return put;
+    while (*s) {
+      STRINGBUF_putc(buf, *s++); put++;
+      width--;
+    }
+    while (width-- > 0) {
+      STRINGBUF_putc(buf, ' '); put++;
+    }
+    return put;
 }
 
 static int
 PUTL(STRINGBUF *buf, ULONG u, int base, int width, int fill_char)
 {
-	int put = 0;
-	char obuf[24]; /* 64 bits -> 22 digits maximum in octal */ 
-	char *t;
+    int put = 0;
+    char obuf[24]; /* 64 bits -> 22 digits maximum in octal */ 
+    char *t;
 
-	t = obuf;
+    t = obuf;
 
-	do {
-		*t++ = "0123456789ABCDEF"[u % base];
-		u /= base;
-		width--;
-	} while (u > 0);
+    do {
+        *t++ = "0123456789ABCDEF"[u % base];
+        u /= base;
+        width--;
+    } while (u > 0);
 
-	while (width-- > 0) {
-	  STRINGBUF_putc(buf, fill_char); put++;
-	}
-	while (t != obuf) {
-	  STRINGBUF_putc(buf, *--t); put++;
-	}
-	return put;
+    while (width-- > 0) {
+      STRINGBUF_putc(buf, fill_char); put++;
+    }
+    while (t != obuf) {
+      STRINGBUF_putc(buf, *--t); put++;
+    }
+    return put;
+}
+
+int __simple_vsprintf(char *str, const char *fmt, va_list args)
+{
+   return __simple_vsnprintf(str, INT_MAX, fmt, args);
 }
 
 int __simple_vsnprintf(char *str, size_t size, const char *fmt, va_list args)
@@ -113,14 +120,20 @@ int __simple_vsnprintf(char *str, size_t size, const char *fmt, va_list args)
      width = 0;
      long_flag = 0;
      fill_char = ' ';
-     if (c == '0') fill_char = '0';
-     while (c && isdigit(c)) {
-       width = 10*width + (c-'0');
+     if (c == '*') {
+       width = va_arg(args, int);
        c = *fmt++;
      }
+     else {
+       if (c == '0') fill_char = '0';
+       while (c && isdigit(c)) {
+         width = 10*width + (c-'0');
+         c = *fmt++;
+       }
+     }
      /* for us "long int" and "int" are the same size, so
-	we can ignore one 'l' flag; use long long if two
-    'l flags are seen */
+        we can ignore one 'l' flag; use long long if two
+        'l flags are seen */
      while (c == 'l' || c == 'L') {
        long_flag++;
        c = *fmt++;

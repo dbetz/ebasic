@@ -16,10 +16,10 @@ void EditWorkspace(System *sys, UserCmd *userCmds, Handler *evalHandler, void *c
 
 /* edit buffer interface */
 void BufInit(void);
-int BufAddLineN(VMVALUE lineNumber, const char *text);
-int BufDeleteLineN(VMVALUE lineNumber);
-int BufSeekN(VMVALUE lineNumber);
-int BufGetLine(VMVALUE *pLineNumber, char *text);
+int BufAddLineN(int lineNumber, const char *text);
+int BufDeleteLineN(int lineNumber);
+int BufSeekN(int lineNumber);
+int BufGetLine(int *pLineNumber, char *text);
 
 #endif
 

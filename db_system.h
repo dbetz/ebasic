@@ -15,7 +15,7 @@
 #define MAXLINE         128
 
 /* line input handler */
-typedef int GetLineHandler(void *cookie, char *buf, int len, VMVALUE *pLineNumber);
+typedef int GetLineHandler(void *cookie, char *buf, int len, int *pLineNumber);
 
 /* system context */
 typedef struct {
